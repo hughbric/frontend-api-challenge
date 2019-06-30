@@ -1,5 +1,7 @@
 # Chitter API Frontend Challenge
 
+A JavaScript front-end single-page-app that interfaces with the Chitter API.
+
 Challenge:
 -------
 

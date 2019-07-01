@@ -4,17 +4,28 @@
   <meta charset="UTF-8">
   <title>Chitter</title>
   <script src="lib/jquery.js"></script>
-  <script src="src/peep.js"></script>
   <script src="interface.js"></script>
+  <script src="src/peep.js"></script>
   <script src="src/session.js"></script>
 </head>
 <body>
     <h1>CHITTER</h1>
     <div id='home-page'>
+      <!-- SIGN-UP/IN BUTTONS -->
       <section id='sign-up-or-in'>
         <button id='sign-up-button'>Sign Up</button>
         <button id='sign-in-button'>Sign In</button>
       </section>
+
+      <!-- POST A PEEP SECTION VISIBLE AFTER SIGN IN -->
+      <section id='post-a-peep-section' style='display:none'>
+        <form>
+          <input type='text' id='peep-text' placeholder="What's happening?"/>
+          <input type='submit' id='post-a-peep' value='Peep'/>
+        </form>
+      </section>
+
+      <!-- DISPLAYS PEEP LIST -->
       <section id='peep-list'></section>
     </div>
 

@@ -1,9 +1,10 @@
 window.onload = function() {
   let session = null;
+  listPeeps();
 
   //  PEEPS
 
-  (function listPeeps() {
+  function listPeeps() {
     const request = new XMLHttpRequest();
     request.open('GET', 'https://chitter-backend-api.herokuapp.com/peeps');
     request.onload = function() {
@@ -15,7 +16,23 @@ window.onload = function() {
       });
     };
     request.send();
-  }());
+  }
+
+  $('#post-a-peep').click(function(event) {
+    event.preventDefault();
+    const text = document.getElementById('peep-text').value;
+    const dataString = {"peep": {"user_id": session.getUserId(), "body": `${text}`}};
+
+    const request = new XMLHttpRequest();
+    request.open('POST', 'https://chitter-backend-api.herokuapp.com/peeps');
+    request.setRequestHeader('Authorization', `Token token=${session.getSessionKey()}`);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.onload = function() {
+      listPeeps();
+      document.getElementById('peep-text').value = '';
+    };
+    request.send(JSON.stringify(dataString));
+  });
 
   // BUTTONS
 
@@ -38,15 +55,18 @@ window.onload = function() {
 
   $('#sign-in-submit').click(function(event) {
     event.preventDefault();
+    // Below, you pull the data from the form on the index.html
     const handle = document.getElementById('sign-in-handle').value;
     const password = document.getElementById('sign-in-password').value;
     const dataString = {"session": {"handle": handle, "password": password}};
 
+    // You construct the request (specific to the API you're using)
     const request = new XMLHttpRequest();
     request.open('POST', 'https://chitter-backend-api.herokuapp.com/sessions');
     request.setRequestHeader('Content-Type', 'application/json');
     request.onload = function() {
       newSession(JSON.parse(this.response));
+      $('#post-a-peep-section').show();
       alert('You have signed in!');
     };
     request.send(JSON.stringify(dataString));
@@ -65,12 +85,14 @@ window.onload = function() {
     request.open('POST', 'https://chitter-backend-api.herokuapp.com/users');
     request.setRequestHeader('Content-Type', 'application/json');
     request.onload = function() {
-      console.log(this.response);
-      alert('You signed up!');
+      if (JSON.parse(this.response).handle == "has already been taken") {
+        alert('That username has already been taken. Try again');
+      } else {
+        alert('You signed up!');
+      }     
     };
     request.send(JSON.stringify(dataString));
     $('#sign-up-page').hide();
     $('#home-page').show();
   });
-
 };
